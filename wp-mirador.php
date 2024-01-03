@@ -60,7 +60,6 @@ class WPMirador
       $this->config = $this->buildConfig($this->type);
     }
     
-
     /****
     * the [manifest] shortcode
     **************************************/
@@ -70,12 +69,15 @@ class WPMirador
 	   // we must have a manifest
 	   $this->parseManifest($atts['manifest']);
 	
-	   if(isset($atts['width'])) { 
-	     if($atts['width'] == "half") {  $width = "50%";  }
-	     elseif($atts['width'] == "third") {  $width = "33%";  }
+	   // width can be % or an integer pixel width
+	   if(isset($atts['width'])) {
+	     if (strpos($atts['width'], "%") !== false) {    
+	       $width = $atts['width'];
+	     }
 	     else {  $width = $atts['width']."px";  }
 	     }
 	   else { $width = "100%"; }
+	   
 	   if(isset($atts['height'])) { $height = $atts['height']."px"; } else { $height = "700px"; }
 	   
 	   if(isset($atts['align'])) { $float = " float:".$atts['align']; } else { $float = ""; }
@@ -88,9 +90,11 @@ class WPMirador
 		$this->config->workspace = (object) array("showZoomControls"=> true);
 		$this->config->workspaceControlPanel = (object) array("enabled"=> false); 
 	     }
+	     /*
 	     if(isset($atts['from-the-page']) && isset($atts['canvas'])) 	{ 
 		$this->config->transcripts = $this->manifestobj->sequences[0]->canvases[$atts['canvas']]->otherContent;
-	     }	     
+	     }	
+	     */     
 	   }  
 	  
 	   
