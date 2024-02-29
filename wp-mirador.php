@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: WP Mirador
-Description: Adds an embeddable IIIF Mirador Viewer to Wordpress using the shortcode [mirador manifest='...'].  Optional attribute include: height (including half or third), height, align, canvas (the index of the canvas within the manifest to display by default), view (gallery), and minimal (removes toolbars).
+Plugin Name: WP Mirador 3
+Description: Embeds a IIIF Mirador 3 Viewer to Wordpress using the shortcode [mirador manifest='...'].  Optional attribute include: height (including half or third), width, align, canvas (which canvas to display by default, starting from 0), view (gallery or single), and minimal (removes toolbars).
 Version: 0.0.1
 Text Domain: mirador
 */
@@ -15,8 +15,6 @@ class WPMirador
         add_action( 'wp_enqueue_scripts', array ( $this, 'add_scripts' ) );
         add_filter('query_vars', array( $this, 'allow_query_vars' ));
         add_action('init', array($this, 'url_rewrites'));
-        //add_action('init', array( $this, 'mirador' ));
-        //add_action('parse_query', array( $this, 'fullscreen_mirador' ));
         add_shortcode( 'mirador', array( $this, 'shortcode') ); 
     }
    
@@ -178,30 +176,5 @@ class WPMirador
     
 }
 
-
-
-/*
-	  if(isset($atts['width'])) { $width = $atts['width']."px"; } else { $width = "100%"; }
-	  if(isset($atts['height'])) { $height = $atts['height']."px"; } else { $height = "700px"; }
-		$output = "    <div id='miradorviewer' style='width:{$width};height:{$height};position:relative;'></div>";
-		$output .= "    <script type='text/javascript'>";
-		$output .= "     var miradorInstance = Mirador.viewer({";
-		$output .= "       id: 'miradorviewer',";
-		$output .= "       windows: [{";
-		$output .= "         loadedManifest: 'https://iiif.harvardartmuseums.org/manifests/object/299843',";
-		$output .= "         canvasIndex: 2,";
-		$output .= "       },";
-		$output .= "       {";
-		$output .= "         loadedManifest: 'https://media.nga.gov/public/manifests/nga_highlights.json',";
-		$output .= "         thumbnailNavigationPosition: 'off',";
-		$output .= "       }],";
-		$output .= "       workspace: {  showZoomControls: true },";
-		$output .= "       workspaceControlPanel: { enabled: false }";
-		$output .= "     });";
-		$output .= "    </script>	";
-		  
-        return $output;
-
-*/
 
 new WPMirador();
