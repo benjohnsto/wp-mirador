@@ -14,5 +14,5 @@ __Optional__ parameters include:
 - width: (an integer indicating pixel height)
 - align: right or left
 - view: can be set to 'gallery'. If omitted, defaults to 'single'
-- minimal: removes the toolbars
-- canvas: indicate the desired canvas to display as default.
+- minimal: removes the toolbars (for example minimal="true")
+- canvas: indicate the desired canvas to display as default. (for example, canvas="3")
