@@ -51,7 +51,12 @@ class WPMirador
     function parseManifest($manifest) {
       $this->manifest = $manifest;
       $this->manifestobj = json_decode(file_get_contents($manifest));
-      $this->type = strtolower(str_replace("sc:","",$this->manifestobj->{'@type'}));
+      if(isset($this->manifestobj->{'@type'}) && $this->manifestobj->{'@type'} == "sc:manifest") {
+         $this->type = strtolower(str_replace("sc:","",$this->manifestobj->{'@type'}));
+      }
+      else {
+         $this->type = strtolower($this->manifestobj->type);
+      }
       
       if(isset($atts['catalog'])) { $this->type = "catalog"; } 
       
@@ -62,6 +67,7 @@ class WPMirador
     * the [manifest] shortcode
     **************************************/
     function shortcode($atts) {
+
 	if(isset($atts['manifest'])) {
 	
 	   // we must have a manifest
