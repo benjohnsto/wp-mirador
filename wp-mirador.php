@@ -51,7 +51,8 @@ class WPMirador
     function parseManifest($manifest) {
       $this->manifest = $manifest;
       $this->manifestobj = json_decode(file_get_contents($manifest));
-      if(isset($this->manifestobj->{'@type'}) && $this->manifestobj->{'@type'} == "sc:manifest") {
+
+      if(isset($this->manifestobj->{'@type'})) {
          $this->type = strtolower(str_replace("sc:","",$this->manifestobj->{'@type'}));
       }
       else {
