@@ -77,8 +77,8 @@ class WPMirador
        <p><label for="choose_manifest">or choose an existing one: <select id="choose_manifest"></select></label></p>
 	<?php } ?>
        
-       <p><label for="mirador_width">Width: <input name="mirador_width" type="text" id="mirador_width" placeholder="Width" value="<? echo $width; ?>" style='width:80px;'></label> <label for="mirador_height" style="margin-left: 2em;">Height: <input name="mirador_height" type="text" id="mirador_height" placeholder="Height" value="<? echo $height; ?>" style='width:80px;'></label></p>
-       <p><label for="mirador_canvas">Page: <input name="mirador_canvas" type="text" id="mirador_canvas" placeholder="Canvas" value="<? echo $canvas; ?>" class="regular-text" style='width:80px;'></label><label for="mirador_view" style="margin-left: 2em;">Default view: <select name="mirador_view" type="text" id="mirador_view"> 
+       <p><label for="mirador_width">Width: <input name="mirador_width" type="text" id="mirador_width" placeholder="Width" value="<?php echo $width; ?>" style='width:80px;'></label> <label for="mirador_height" style="margin-left: 2em;">Height: <input name="mirador_height" type="text" id="mirador_height" placeholder="Height" value="<?php echo $height; ?>" style='width:80px;'></label></p>
+       <p><label for="mirador_canvas">Page: <input name="mirador_canvas" type="text" id="mirador_canvas" placeholder="Canvas" value="<?php echo $canvas; ?>" class="regular-text" style='width:80px;'></label><label for="mirador_view" style="margin-left: 2em;">Default view: <select name="mirador_view" type="text" id="mirador_view"> 
         <?php if ($view == 'gallery') { ?>
          <option value=''>Single</option>
          <option value='gallery' selected>Gallery</option>
