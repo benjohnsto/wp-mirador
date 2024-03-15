@@ -1,10 +1,4 @@
 <?php
-/*
-Plugin Name: WP Mirador 3
-Description: Embeds a IIIF Mirador 3 Viewer to Wordpress using the shortcode [mirador manifest='...'].  Optional attribute include: height (including half or third), width, align, canvas (which canvas to display by default, starting from 0), view (gallery or single), and minimal (removes toolbars).
-Version: 0.0.1
-Text Domain: mirador
-*/
 
 class WPMirador
 {
@@ -32,10 +26,10 @@ class WPMirador
 
     function add_admin_scripts()
     {
-        $data = stripslashes(get_option("collection_manifest"));
+        $data = $this->getManifests();
         wp_register_script('wp_mirador', plugins_url('js/script.js', __FILE__), ['jquery'], '1.1', true);
-        wp_enqueue_script('wp_mirador');    
-        wp_add_inline_script('wp_mirador', 'const collection_manifest = "' . $data. '";', $position = 'after');
+        wp_enqueue_script('wp_mirador');
+        wp_add_inline_script('wp_mirador', 'const wpmiradorvars = ' . $data, $position = 'after');
     }
 
     function meta_box()
@@ -44,7 +38,28 @@ class WPMirador
         add_meta_box('mirador', __('Mirador Viewer', 'textdomain'), [$this, 'meta_box_content'], 'page');
     }
 
+    function getManifests()
+    {
+        $args = [
+            'post_type' => 'any',
+            'meta_query' => [
+                [
+                    'key' => '_mirador_manifest',
+                    'value' => '',
+                    'compare' => '!=',
+                ],
+            ],
+        ];
 
+        $posts = get_posts($args);
+        $manifests = [];
+
+        foreach ($posts as $post) {
+            $manifests[] = get_post_meta($post->ID, "_mirador_manifest", true);
+        }
+
+        return json_encode($manifests);
+    }
 
     function meta_box_content()
     {
@@ -70,12 +85,15 @@ class WPMirador
         ?>
        <div>
        
-	<label for="mirador_manifest">Enter a IIIF manifest URL
-       <input name="mirador_manifest" type="text" id="mirador_manifest" placeholder="Manifest URL" class="regular-text" style='width:100%;' value="<?php echo $manifest; ?>"></label>
+       <?php 
+        if($manifest = get_option("collection_manifest")) {
+            echo $manifest;
+        } 
+       ?>
+       <input name="mirador_manifest" type="text" id="mirador_manifest" placeholder="Manifest URL" class="regular-text" style='width:100%;' value="<?php echo $manifest; ?>">
        
-       <?php if($option = get_option("collection_manifest")) {  ?>
-       <p><label for="choose_manifest">or choose an existing one: <select id="choose_manifest"></select></label></p>
-	<?php } ?>
+       <select id="choose_manifest"></select>
+       <script>var manifests = "<?php echo $this->getManifests(); ?>";</script>
        
        <p><label for="mirador_width">Width: <input name="mirador_width" type="text" id="mirador_width" placeholder="Width" value="<? echo $width; ?>" style='width:80px;'></label> <label for="mirador_height" style="margin-left: 2em;">Height: <input name="mirador_height" type="text" id="mirador_height" placeholder="Height" value="<? echo $height; ?>" style='width:80px;'></label></p>
        <p><label for="mirador_canvas">Page: <input name="mirador_canvas" type="text" id="mirador_canvas" placeholder="Canvas" value="<? echo $canvas; ?>" class="regular-text" style='width:80px;'></label><label for="mirador_view" style="margin-left: 2em;">Default view: <select name="mirador_view" type="text" id="mirador_view"> 
@@ -292,8 +310,7 @@ class WPMirador
         } ?>
     <h2>IIIF</h2>
     <form action="options-general.php?page=mirador" method="post">
-        <!--<p><textarea name="collection_manifest" style="width:80%;height:600px;"><?php echo stripslashes($option); ?></textarea></p>-->
-        <p><label for="collection_manifest">Collection manifest</label> <input type="text" id="collection_manifest" name="collection_manifest" style="width:60%;" value="<?php echo stripslashes($option); ?>"/></p>
+        <p><textarea name="collection_manifest" style="width:80%;height:600px;"><?php echo stripslashes($option); ?></textarea></p>
         <input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e('Save'); ?>" />
     </form>
     <?php
