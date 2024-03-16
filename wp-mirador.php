@@ -49,22 +49,22 @@ class WPMirador
     function meta_box_content()
     {
         global $post;
-        if (!($manifest = get_post_meta($post->ID, '_mirador_manifest', true))) {
+        if (!$manifest = get_post_meta($post->ID, '_mirador_manifest', true)) {
             $manifest = "";
         }
-        if (!($width = get_post_meta($post->ID, '_mirador_width', true))) {
+        if (!$width = get_post_meta($post->ID, '_mirador_width', true)) {
             $width = "100%";
         }
-        if (!($height = get_post_meta($post->ID, '_mirador_height', true))) {
+        if (!$height = get_post_meta($post->ID, '_mirador_height', true)) {
             $height = "600px";
         }
-        if (!($canvas = get_post_meta($post->ID, '_mirador_canvas', true))) {
+        if (!$canvas = get_post_meta($post->ID, '_mirador_canvas', true)) {
             $canvas = 1;
         }
-        if (!($view = get_post_meta($post->ID, '_mirador_view', true))) {
+        if (!$view = get_post_meta($post->ID, '_mirador_view', true)) {
             $view = "single";
         }
-        if (!($minimal = get_post_meta($post->ID, '_mirador_minimal', true))) {
+        if (!$minimal = get_post_meta($post->ID, '_mirador_minimal', true)) {
             $minimal = "";
         }
         ?>
@@ -126,7 +126,9 @@ class WPMirador
         } elseif (isset($manifestobj->type) && $manifestobj->type == "Manifest") {
             $this->type = "manifest";
             if (is_object($manifestobj->label)) {
-                $label = reset($manifestobj->label)[0];
+                $objIterator = new ArrayIterator($manifestobj->label);
+                $label = $objIterator->current()[0];            
+                
             } elseif (is_array($manifestobj->label)) {
                 $label = $manifestobj->label[0];
             } else {
@@ -139,6 +141,7 @@ class WPMirador
         }
 
         $this->config = new StdClass();
+        $this->config->window = array("allowFullscreen"=>true);
         $this->config->label = "Label";
         $this->config->id = $divId;
 
@@ -210,6 +213,9 @@ class WPMirador
             if (isset($atts['canvas'])) {
                 $this->canvas = $atts['canvas'];
             }
+            if (isset($atts['page'])) {
+                $this->canvas = $atts['page'] - 1;
+            }            
             if (isset($atts['view'])) {
                 $this->view = $atts['view'];
             }
@@ -269,7 +275,9 @@ class WPMirador
     {
         $configjson = json_encode($this->config, JSON_PRETTY_PRINT);
 
-        $output = "    <div id='{$divId}' style='width:{$this->width};height:{$this->height};position:relative;'></div>";
+        $output = "    <div id='mirador-container' style='width:{$this->width};height:{$this->height};position:relative;overflow-y:hidden;overflow-y:hidden;'>";
+        $output .= "    <div id='{$divId}'></div>";
+        $output .= "    </div>";
         $output .= "    <script type='text/javascript'>";
         $output .= "     var miradorInstance = Mirador.viewer({$configjson});";
         $output .= "    </script>";
