@@ -183,13 +183,14 @@ class WPMirador
         }
 
         if ($this->type == 'manifest') {
-            if (isset($atts['canvas'])) {
-                $this->config->windows[0]->canvasIndex = $atts['canvas'] + 1;
+
+            if (isset($this->canvas)) {
+                $this->config->windows[0]->canvasIndex = $this->canvas + 1;
             }
-            if (isset($atts['view'])) {
-                $this->config->windows[0]->view = $atts['view'];
+            if (isset($this->view)) {
+                $this->config->windows[0]->view = $this->view;
             }
-            if (isset($atts['minimal'])) {
+            if (isset($this->minimal)) {
                 $this->config->workspace = (object) ["showZoomControls" => true];
                 $this->config->workspaceControlPanel = (object) ["enabled" => false];
             }
